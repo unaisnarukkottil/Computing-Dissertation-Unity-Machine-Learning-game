@@ -57,27 +57,27 @@ Computer capable of running the training for the ML especially the GPU as it use
 Here we will be looking at all design elements and explain why the decision was taken as well as a well-structured explanation of how the game is Going to work. A wireframe of the program will be shown following the explanation of what it does.
 There are mainly 11 different screens for the game prototype, and it will be further detailed below.
 - Main menu design
-
+![image](https://user-images.githubusercontent.com/77618309/118789524-72dcae80-b8c7-11eb-8c41-f133b90a6560.png)
 - Control’s menu design
-
+![image](https://user-images.githubusercontent.com/77618309/118789549-7839f900-b8c7-11eb-8f0b-3a351b11bd11.png)
 - Settings menu design
-
+![image](https://user-images.githubusercontent.com/77618309/118789584-81c36100-b8c7-11eb-99bc-0422cc14a339.png)
 - Difficulty menu design.
-
+![image](https://user-images.githubusercontent.com/77618309/118789609-85ef7e80-b8c7-11eb-997c-4bfe5d2b2712.png)
 - Player selection menu design
-
+![image](https://user-images.githubusercontent.com/77618309/118789624-89830580-b8c7-11eb-97f2-5ebbdb043b79.png)
 - Stage selection menu design
-
+![image](https://user-images.githubusercontent.com/77618309/118789632-8c7df600-b8c7-11eb-929b-030cd55173a9.png)
 - Level selection menu design
-
+![image](https://user-images.githubusercontent.com/77618309/118789646-8f78e680-b8c7-11eb-96d1-9712ba323807.png)
 - Confirmation menu design
-
+![image](https://user-images.githubusercontent.com/77618309/118789657-930c6d80-b8c7-11eb-8155-cee06a079eb6.png)
 - Gameplay screen design
-
+![image](https://user-images.githubusercontent.com/77618309/118789668-96075e00-b8c7-11eb-982b-9fc01ddc8bfc.png)
 - Pause menu design
-
+![image](https://user-images.githubusercontent.com/77618309/118789681-99024e80-b8c7-11eb-9725-763ace55abf7.png)
 - Result menu design
-
+![image](https://user-images.githubusercontent.com/77618309/118789691-9bfd3f00-b8c7-11eb-95c5-57d5841f102b.png)
 # Project Implementation 
 The game prototype will be created in the UNITY engine. Unity engine was chosen as it is very friendly to develop on and can work on 25 different platforms.
 It is the best method as it also has an open-source machine learning agent which connects to ML programs which include TensorFlow.
@@ -91,24 +91,24 @@ The main objective is to implement unity ML-Agent into a working game. A new pro
 Machine learning is subset of AI where instead of explicitly programming behaviors we teach the Machine how to accomplish the behaviors. This is analogous to how we as humans learn over time such as learning how to crawl and walk when were toddlers. ML -agents toolkit is a unity feature which enables games and simulations to serve as specialized environment to train intelligent agents. In context of UNITY ml-agents are typically represented as game objects. So, training intelligent agents means we are training game Objects to accomplish a particular set of goals in our games without programing instructions to do so.
 So, in our game the game is set up by having a track in it which is the level in which we want our agents to observe and familiarize with. The enemy agents are the game objects we want to train so they can achieve a goal which is driving without colliding with the track walls. So, all the observation is collected and used to train the agents. We can look at the track which we are going to train out game objects with as shown in Fig 7.1. Inside this game objects we have two more game objects called the Décor, the meshes that make up the trach and a series of agent checkpoint colliders as seen in Fig 7.1.
 - Fig 7. 1 Training Track
- 
+![image](https://user-images.githubusercontent.com/77618309/118789714-a28bb680-b8c7-11eb-8224-c475129251f2.png)
 These colliders help move the training agent to move in the correct direction during training. In the track game object, there is a component called Debug Checkpoint Ray this helps to identify the order of the check points and their relative directions. Typically, the colliders must be in order and facing the forward direction in the track because this greatly help our agents to learn the environment. 
 So, the agent we intent to train is the ML_Enemy which will racing against the player. This agent is the same as the player but with the exception that there is an added behavior parameters and Kart Agent component Fig 7.2. Behavior parameter allows the agents how we should allow the agent to interpret its own actions. We want the agents to mimic the actual human players by generating input data like that of a controller or keyboard. This is done in the vector actor configuration of the behavior parameters a vector action type of discrete means that we define the actions to be an array of integers. For the game we define two branches which are representative of our x and y input axis. By defining branch 0 size to three we allow the agent to understand there are three possible integer values that are generated for the x input axis 0,1, and 2. A branch 1 size of two indicates there are two possible integer values that can be generated for the y axis 0 and 1. 
 Now we can look at the Kart Agent components Fig 7.2. The kart agent component is the primary agent components which will observe the training environment and generate the inputs needed to drive the kart. If we view the observation params we define how the agent will define the environment by using the transforms defined in the sensors raycast distance and Mask fields. At each training step the agent will raycast in a radial ark and will determine how close it is to the track walls if the agent is too close to the wall. Then a crash is detected you can manipulate what it means to be too close to the wall by modifying the hit threshold of each sensor field. The hit threshold is typically a value between zero and 1 and is the fraction of the value defined by the distance. By viewing the colliders fields in the check point section of the kart agent component we can see that agent check point colliders that was previous in the track in the scene is now assigned to the agent these colliders simply help the agent in the right direction when driving.
 - Fig 7. 2 Behavior Parameters
-
+![image](https://user-images.githubusercontent.com/77618309/118789733-a7506a80-b8c7-11eb-9cc1-97d16575118b.png)
 With reinforcement learning we can reward the agent when it successfully drives towards the check points and discourage the agent if it crashes into the track walls. After successfully completing the number of steps defined in the kart agent components, max step field or crashing. The agents reset on a random checkpoint and trains again. This allows the agent to adopt a strategy of trail and error to infer what kind of input works. We can adjust the rewards in the rewards section in the kart agent component.  We generally want to give the agent small rewards when it moves toward the checkpoints and large reward when it is passing through the checkpoint. This introduces a positive feedback for the agent as it trains over time.
 - Fig 7. 3 Kart Agent
- 
+![image](https://user-images.githubusercontent.com/77618309/118789759-addee200-b8c7-11eb-97f8-c9ad362fc615.png)
 To train the AI first we must create a virtual environment in the game project path as show in Fig 7.4. This creates a virtual environment for python specifically for the project instead of a global one which will be used in every subsequent python related projects. To activate the virtual environment on windows and installing the ML-Agent dependency is shown in Fig 7.4. This package will also install TensorFlow and the Unity ML agent’s bindings that allow communication between a unity training instance and TensorFlow. Now go back to the Unity editor. Make sure the mode field in Kart agent is set to training instead of inference in kart agent component. To train agents brain fasted you can duplicate the kart classic ML agents as many times as needed but the more agents you add the slower the simulation runs adding more agents will allow for more observation to be processed and will contribute to the single brain that is learning but will not mean you are training multiple brains simultaneously.
 - Fig 7. 4 Installing mlagents dependency
-
+![image](https://user-images.githubusercontent.com/77618309/118789779-b2a39600-b8c7-11eb-818e-2f79503c0c0c.png)
 In the command prompt run the command shown in Fig 7.5. This will make the unity editor start training the game object with all out parameters.
 - Fig 7. 5 Training the game object
-
+![image](https://user-images.githubusercontent.com/77618309/118789791-b59e8680-b8c7-11eb-99c1-220ff8fa0de4.png)
 To stop Training press the play button in the editor and the trained brain will be saved at the path to your projects like shown in Fig 7.6.
 - Fig 7. 6 Stopping and saving trained NN file.
-
+![image](https://user-images.githubusercontent.com/77618309/118789800-b8997700-b8c7-11eb-90e0-d2aa89178729.png)
 Import the NN file that was trained into the project and assign it to behavior parameters components model field in the Enemy game object. To view the result just change the mode field in the Kart Agent from training to inference. Then press the play button again to see the result of the training.
 Thus, we have successfully implemented ML-agents into our game. The rest of the game can be built around this now and the final game can be exported to an EXE file to run and play in different computers.
 
